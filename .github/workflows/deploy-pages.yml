@@ -35,6 +35,13 @@ jobs:
         env:
           GITHUB_PAGES: "true"
 
+      - name: Log exported asset paths
+        run: |
+          echo "--- First _next asset URLs in out/index.html ---"
+          node -e "const fs=require('fs');const html=fs.readFileSync('out/index.html','utf8');const m=[...html.matchAll(/\"(\/[^\"]*?_next\/[^\"]+)\"/g)].slice(0,20).map(x=>x[1]);console.log(m.join('\n')||'(none)');"
+          echo "--- Contains /Flush-Force-One-Website/_next ? ---"
+          node -e "const fs=require('fs');const html=fs.readFileSync('out/index.html','utf8');console.log(html.includes('/Flush-Force-One-Website/_next')?'YES':'NO');"
+
       - name: Disable Jekyll
         run: touch out/.nojekyll
 
