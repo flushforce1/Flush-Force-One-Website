@@ -113,7 +113,7 @@ export default async function Home() {
             <span className={styles.logoWrap}>
               <Image
                 className={styles.logo}
-                src="/FFOLogo.PNG"
+                src="FFOLogo.PNG"
                 alt="Flush Force One Plumbing logo"
                 width={220}
                 height={140}
@@ -348,7 +348,7 @@ export default async function Home() {
               <span className={styles.logoWrap}>
                 <Image
                   className={styles.logo}
-                  src="/FFOLogo.PNG"
+                  src="FFOLogo.PNG"
                   alt="Flush Force One Plumbing logo"
                   width={220}
                   height={140}
