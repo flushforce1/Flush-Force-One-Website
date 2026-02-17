@@ -103,11 +103,9 @@
 
 .pillPrimary {
   border-color: color-mix(in oklab, var(--brand) 35%, var(--border));
-  background: radial-gradient(
-    140% 160% at 40% 10%,
-    color-mix(in oklab, var(--brand-2) 35%, transparent),
-    color-mix(in oklab, var(--brand) 25%, transparent)
-  );
+  background: radial-gradient(140% 160% at 40% 10%,
+      color-mix(in oklab, var(--brand-2) 35%, transparent),
+      color-mix(in oklab, var(--brand) 25%, transparent));
 }
 
 .hero {
@@ -325,16 +323,12 @@
   border-radius: calc(var(--radius) + 6px);
   border: 1px solid var(--border);
   padding: 18px;
-  background: radial-gradient(
-      120% 120% at 10% 10%,
+  background: radial-gradient(120% 120% at 10% 10%,
       rgba(200, 185, 155, 0.32),
-      transparent 55%
-    ),
-    radial-gradient(
-      120% 120% at 90% 0%,
+      transparent 55%),
+    radial-gradient(120% 120% at 90% 0%,
       rgba(11, 34, 61, 0.18),
-      transparent 60%
-    ),
+      transparent 60%),
     color-mix(in oklab, var(--surface) 78%, transparent);
 }
 

@@ -1,12 +1,14 @@
 /** @type {import('next').NextConfig} */
 const repo = "Flush-Force-One-Website";
-const isProd = process.env.NODE_ENV === "production";
+
+// Explicit flag: only set this when deploying to https://<org>.github.io/<repo>/
+const isGitHubPages = process.env.GITHUB_PAGES === "true";
 
 const nextConfig = {
   output: "export",
   images: { unoptimized: true },
-  basePath: isProd ? `/${repo}` : "",
-  assetPrefix: isProd ? `/${repo}/` : "",
+  basePath: isGitHubPages ? `/${repo}` : "",
+  assetPrefix: isGitHubPages ? `/${repo}/` : "",
 };
 
 export default nextConfig;
