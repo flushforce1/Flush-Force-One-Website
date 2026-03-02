@@ -104,7 +104,17 @@ async function getHomePageData() {
     const settings = res?.settings;
     const home = res?.home;
 
-    if (!settings || !home) return SITE_FALLBACK;
+    if (!settings || !home) {
+      return {
+        ...SITE_FALLBACK,
+        nav: {
+          servicesLabel: "Services",
+          whyLabel: "Why Us",
+          processLabel: "Process",
+          contactLabel: "Contact",
+        },
+      };
+    }
 
     return {
       businessName: settings.businessName ?? SITE_FALLBACK.businessName,
@@ -190,12 +200,30 @@ async function getHomePageData() {
       },
     };
   } catch {
-    return SITE_FALLBACK;
+    return {
+      ...SITE_FALLBACK,
+      nav: {
+        servicesLabel: "Services",
+        whyLabel: "Why Us",
+        processLabel: "Process",
+        contactLabel: "Contact",
+      },
+    };
   }
 }
 
 export default async function Home() {
   const data = await getHomePageData();
+
+  const heroMetaCards = Array.isArray(data?.heroMetaCards)
+    ? data.heroMetaCards
+    : [];
+
+  const why = data?.why ?? { heading: "Why homeowners choose us", intro: null, points: [], noteTitle: "", noteBody: "" };
+  const process = data?.process ?? { heading: "How it works", intro: null, steps: [] };
+  const serviceAreaSection = data?.serviceAreaSection ?? { heading: "Service area" };
+  const contact = data?.contact ?? { heading: "Contact" };
+  const footer = data?.footer ?? { blurb: "", columns: [], legalLinks: [] };
 
   return (
     <div className={styles.page}>
@@ -277,11 +305,11 @@ export default async function Home() {
                 </div>
 
                 <div className={styles.metaRow}>
-                  {data.heroMetaCards.slice(0, 2).map((c) => (
-                    <div key={c.title} className={styles.metaCard}>
-                      <div className={styles.metaCardTitle}>{c.title}</div>
-                      <div className={styles.metaCardText}>{c.body}</div>
-                    </div>
+                  {heroMetaCards.slice(0, 2).map((c) => (
+                    <li key={c.title} className={styles.metaCard}>
+                      <p className={styles.metaTitle}>{c.title}</p>
+                      <p className={styles.metaBody}>{c.body}</p>
+                    </li>
                   ))}
                 </div>
               </div>
@@ -325,22 +353,19 @@ export default async function Home() {
         <section id="why" className={`${styles.section} ${styles.sectionAlt}`}>
           <div className="container">
             <div className={styles.sectionHeader}>
-              <h2>{data.why.heading}</h2>
-              <p>
-                {data.why.intro ||
-                  "We focus on clear communication, clean work, and durable repairs."}
-              </p>
+              <h2>{why.heading}</h2>
+              {why.intro ? <p className={styles.lede}>{why.intro}</p> : null}
             </div>
 
             <div className={styles.split}>
               <ul className={styles.list}>
-                {data.why.points.map((p) => (
+                {(why.points || []).map((p) => (
                   <li key={p}>{p}</li>
                 ))}
               </ul>
               <div className={styles.callout}>
-                <strong>{data.why.noteTitle}</strong>
-                <p>{data.why.noteBody}</p>
+                <p className={styles.noteTitle}>{why.noteTitle}</p>
+                <p className={styles.noteBody}>{why.noteBody}</p>
               </div>
             </div>
           </div>
@@ -349,20 +374,17 @@ export default async function Home() {
         <section id="process" className={styles.section}>
           <div className="container">
             <div className={styles.sectionHeader}>
-              <h2>{data.process.heading}</h2>
-              <p>
-                {data.process.intro ||
-                  "A straightforward process that keeps you in control from first call to final cleanup."}
-              </p>
+              <h2>{process.heading}</h2>
+              {process.intro ? <p className={styles.lede}>{process.intro}</p> : null}
             </div>
 
             <div className={styles.cards}>
-              {data.process.steps.map((step, idx) => (
-                <article key={step.title} className={styles.card}>
+              {(process.steps || []).map((s, idx) => (
+                <article key={s.title || idx} className={styles.card}>
                   <h3>
-                    {idx + 1}. {step.title}
+                    {idx + 1}. {s.title}
                   </h3>
-                  <p>{step.body}</p>
+                  <p>{s.body}</p>
                 </article>
               ))}
             </div>
@@ -375,26 +397,27 @@ export default async function Home() {
         >
           <div className="container">
             <div className={styles.sectionHeader}>
-              <h2>{data.serviceAreaSection.heading}</h2>
+              <h2>{serviceAreaSection.heading}</h2>
               <p>
-                {data.serviceAreaSection.intro ||
+                {serviceAreaSection.intro ||
                   "Add neighborhoods and cities you cover. This will be CMS-driven when Sanity is connected."}
               </p>
             </div>
 
             <div className={styles.split}>
               <div className={styles.card}>
-                <h3>{data.serviceAreaSection.neighborhoodsTitle}</h3>
+                <h3>{serviceAreaSection.neighborhoodsTitle}</h3>
                 <p>
-                  {data.serviceAreaSection.neighborhoodsBody ||
-                    "Downtown • Riverside • Northside • West End • Lakeside • Hillcrest"}
+                  {serviceAreaSection.neighborhoodsBody ||
+                    "List the towns/areas you serve. (CMS editable)"}
                 </p>
               </div>
+
               <div className={styles.card}>
-                <h3>{data.serviceAreaSection.hoursTitle}</h3>
+                <h3>{serviceAreaSection.hoursTitle}</h3>
                 <p>
-                  {data.serviceAreaSection.hoursBody ||
-                    "Mon–Fri 8am–6pm • Sat 9am–2pm • Emergency after-hours by request"}
+                  {serviceAreaSection.hoursBody ||
+                    "Add your normal hours and your after-hours policy. (CMS editable)"}
                 </p>
               </div>
             </div>
@@ -404,29 +427,29 @@ export default async function Home() {
         <section id="contact" className={styles.section}>
           <div className="container">
             <div className={styles.sectionHeader}>
-              <h2>{data.contact.heading}</h2>
+              <h2>{contact.heading}</h2>
               <p>
-                {data.contact.intro ||
+                {contact.intro ||
                   "For fastest service, call or text. For estimates, tell us what’s happening and share photos if you can."}
               </p>
             </div>
 
             <div className={styles.split}>
               <div className={styles.card}>
-                <h3>{data.contact.callTitle}</h3>
+                <h3>{contact.callTitle}</h3>
                 <p>
                   <a href={`tel:${data.phoneE164}`}>{data.phoneDisplay}</a>
                   <br />
                   <span style={{ color: "var(--muted)" }}>
-                    {data.contact.callBody || "Tap to call on mobile."}
+                    {contact.callBody || "Tap to call on mobile."}
                   </span>
                 </p>
               </div>
 
               <div className={styles.card}>
-                <h3>{data.contact.quoteTitle}</h3>
+                <h3>{contact.quoteTitle}</h3>
                 <p>
-                  {data.contact.quoteBody ||
+                  {contact.quoteBody ||
                     "Hook up a free-tier form provider (or a simple email link) and store submissions in Sanity if desired."}
                 </p>
               </div>
@@ -450,11 +473,11 @@ export default async function Home() {
                 <span>{data.businessName}</span>
               </span>
             </div>
-            <p>{data.footer.blurb}</p>
+            <p className={styles.footerBlurb}>{footer.blurb}</p>
           </div>
 
           <div className={styles.footerCols}>
-            {data.footer.columns.map((col) => (
+            {(footer.columns || []).map((col) => (
               <div key={col.title}>
                 <h3>{col.title}</h3>
                 <ul>
@@ -474,7 +497,7 @@ export default async function Home() {
             © {new Date().getFullYear()} {data.businessName}. All rights reserved.
           </span>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-            {data.footer.legalLinks.map((l) => (
+            {(footer.legalLinks || []).map((l) => (
               <a key={l.label} href={l.href}>
                 {l.label}
               </a>
