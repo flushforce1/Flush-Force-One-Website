@@ -6,7 +6,15 @@ const isGitHubPages = process.env.GITHUB_PAGES === "true";
 
 const nextConfig = {
   output: "export",
-  images: { unoptimized: true },
+  images: {
+    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
+    ],
+  },
   basePath: isGitHubPages ? `/${repo}` : "",
   assetPrefix: isGitHubPages ? `/${repo}/` : "",
 };

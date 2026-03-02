@@ -1,0 +1,428 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "businessName",
+        "type": "string",
+        "title": "Business name"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Example: (555) 123-4567",
+        "name": "phoneDisplay",
+        "type": "string",
+        "title": "Phone (display)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Example: +15551234567",
+        "name": "phoneE164",
+        "type": "string",
+        "title": "Phone (E.164)"
+      },
+      {
+        "name": "serviceArea",
+        "type": "string",
+        "title": "Service area line"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "logo",
+        "type": "image"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "label",
+                "type": "string"
+              },
+              {
+                "name": "href",
+                "type": "string",
+                "title": "URL"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "footerLegalLinks",
+        "type": "array",
+        "title": "Footer legal links"
+      }
+    ],
+    "name": "siteSettings",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "tagline",
+        "type": "string",
+        "title": "Hero tagline"
+      },
+      {
+        "initialValue": "Call for Service",
+        "name": "primaryCtaLabel",
+        "type": "string",
+        "title": "Primary CTA label"
+      },
+      {
+        "initialValue": "Request a Quote",
+        "name": "secondaryCtaLabel",
+        "type": "string",
+        "title": "Secondary CTA label"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "heroBullets",
+        "type": "array",
+        "title": "Hero bullets"
+      },
+      {
+        "rows": 3,
+        "name": "heroLead",
+        "type": "text",
+        "title": "Hero supporting text"
+      },
+      {
+        "initialValue": "Core services",
+        "name": "servicesHeading",
+        "type": "string",
+        "title": "Services section heading"
+      },
+      {
+        "rows": 3,
+        "name": "servicesIntro",
+        "type": "text",
+        "title": "Services section intro"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "rows": 3,
+                "name": "body",
+                "type": "text"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "services",
+        "type": "array"
+      },
+      {
+        "initialValue": "Why homeowners choose us",
+        "name": "whyHeading",
+        "type": "string",
+        "title": "Why Us section heading"
+      },
+      {
+        "rows": 3,
+        "name": "whyIntro",
+        "type": "text",
+        "title": "Why Us section intro"
+      },
+      {
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "whyPoints",
+        "type": "array",
+        "title": "Why Us points"
+      },
+      {
+        "name": "whyNoteTitle",
+        "type": "string",
+        "title": "Why Us note title"
+      },
+      {
+        "rows": 3,
+        "name": "whyNoteBody",
+        "type": "text",
+        "title": "Why Us note body"
+      },
+      {
+        "initialValue": "How it works",
+        "name": "processHeading",
+        "type": "string",
+        "title": "Process section heading"
+      },
+      {
+        "rows": 3,
+        "name": "processIntro",
+        "type": "text",
+        "title": "Process section intro"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "rows": 3,
+                "name": "body",
+                "type": "text"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "processSteps",
+        "type": "array",
+        "title": "Process steps"
+      },
+      {
+        "initialValue": "Service area",
+        "name": "serviceAreaHeading",
+        "type": "string",
+        "title": "Service area section heading"
+      },
+      {
+        "rows": 3,
+        "name": "serviceAreaIntro",
+        "type": "text",
+        "title": "Service area section intro"
+      },
+      {
+        "initialValue": "Nearby neighborhoods",
+        "name": "serviceAreaNeighborhoodsTitle",
+        "type": "string",
+        "title": "Neighborhoods card title"
+      },
+      {
+        "rows": 3,
+        "name": "serviceAreaNeighborhoodsBody",
+        "type": "text",
+        "title": "Neighborhoods card body"
+      },
+      {
+        "initialValue": "Typical hours",
+        "name": "serviceAreaHoursTitle",
+        "type": "string",
+        "title": "Hours card title"
+      },
+      {
+        "rows": 3,
+        "name": "serviceAreaHoursBody",
+        "type": "text",
+        "title": "Hours card body"
+      },
+      {
+        "initialValue": "Contact",
+        "name": "contactHeading",
+        "type": "string",
+        "title": "Contact section heading"
+      },
+      {
+        "rows": 3,
+        "name": "contactIntro",
+        "type": "text",
+        "title": "Contact section intro"
+      },
+      {
+        "initialValue": "Call",
+        "name": "contactCallCardTitle",
+        "type": "string",
+        "title": "Contact call card title"
+      },
+      {
+        "rows": 3,
+        "name": "contactCallCardBody",
+        "type": "text",
+        "title": "Contact call card body"
+      },
+      {
+        "initialValue": "Request a quote",
+        "name": "contactQuoteCardTitle",
+        "type": "string",
+        "title": "Contact quote card title"
+      },
+      {
+        "rows": 3,
+        "name": "contactQuoteCardBody",
+        "type": "text",
+        "title": "Contact quote card body"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "of": [
+                  {
+                    "fields": [
+                      {
+                        "name": "label",
+                        "type": "string"
+                      },
+                      {
+                        "name": "href",
+                        "type": "string",
+                        "title": "URL"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "name": "links",
+                "type": "array"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "footerColumns",
+        "type": "array",
+        "title": "Footer columns"
+      },
+      {
+        "fields": [
+          {
+            "initialValue": "Services",
+            "name": "servicesLabel",
+            "type": "string",
+            "title": "Services link label"
+          },
+          {
+            "initialValue": "Why Us",
+            "name": "whyLabel",
+            "type": "string",
+            "title": "Why Us link label"
+          },
+          {
+            "initialValue": "Process",
+            "name": "processLabel",
+            "type": "string",
+            "title": "Process link label"
+          },
+          {
+            "initialValue": "Contact",
+            "name": "contactLabel",
+            "type": "string",
+            "title": "Contact link label"
+          }
+        ],
+        "name": "nav",
+        "type": "object",
+        "title": "Navigation"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "max",
+                "constraint": 3
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "The two small cards under the hero CTAs.",
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "rows": 2,
+                "name": "body",
+                "type": "text"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "heroMetaCards",
+        "type": "array",
+        "title": "Hero meta cards"
+      },
+      {
+        "rows": 3,
+        "name": "footerBlurb",
+        "type": "text",
+        "title": "Footer description (blurb)"
+      }
+    ],
+    "name": "homePage",
+    "type": "document"
+  }
+]

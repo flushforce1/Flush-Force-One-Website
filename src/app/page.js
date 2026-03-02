@@ -1,6 +1,9 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 
+import { sanityClient } from "../sanity/client";
+import { HOME_PAGE_QUERY } from "../sanity/queries";
+
 const SITE_FALLBACK = {
   businessName: "Flush Force One Plumbing",
   tagline: "Fast, friendly plumbing—done right the first time.",
@@ -93,9 +96,102 @@ const SITE_FALLBACK = {
   },
 };
 
-// Later, replace this with Sanity fetches (see notes below).
+// Replace this with Sanity fetches.
 async function getHomePageData() {
-  return SITE_FALLBACK;
+  try {
+    const res = await sanityClient.fetch(HOME_PAGE_QUERY);
+
+    const settings = res?.settings;
+    const home = res?.home;
+
+    if (!settings || !home) return SITE_FALLBACK;
+
+    return {
+      businessName: settings.businessName ?? SITE_FALLBACK.businessName,
+      tagline: home.tagline ?? SITE_FALLBACK.tagline,
+      phoneDisplay: settings.phoneDisplay ?? SITE_FALLBACK.phoneDisplay,
+      phoneE164: settings.phoneE164 ?? SITE_FALLBACK.phoneE164,
+      serviceArea: settings.serviceArea ?? SITE_FALLBACK.serviceArea,
+      logoUrl: settings.logo ?? null,
+      ctas: {
+        primaryLabel: home.primaryCtaLabel ?? SITE_FALLBACK.ctas.primaryLabel,
+        secondaryLabel:
+          home.secondaryCtaLabel ?? SITE_FALLBACK.ctas.secondaryLabel,
+      },
+      nav: {
+        servicesLabel: home?.nav?.servicesLabel ?? "Services",
+        whyLabel: home?.nav?.whyLabel ?? "Why Us",
+        processLabel: home?.nav?.processLabel ?? "Process",
+        contactLabel: home?.nav?.contactLabel ?? "Contact",
+      },
+      heroMetaCards:
+        home.heroMetaCards?.length
+          ? home.heroMetaCards
+          : [
+              {
+                title: "Fast response",
+                body: "We’ll confirm scheduling by text/call, and keep you updated.",
+              },
+              {
+                title: "Upfront pricing",
+                body: "Options explained clearly before work begins.",
+              },
+            ],
+      heroLead: home.heroLead ?? null,
+      heroBullets: home.heroBullets?.length
+        ? home.heroBullets
+        : SITE_FALLBACK.heroBullets,
+      servicesHeading: home.servicesHeading ?? "Core services",
+      servicesIntro: home.servicesIntro ?? null,
+      services: home.services?.length ? home.services : SITE_FALLBACK.services,
+      why: {
+        heading: home.whyHeading ?? "Why homeowners choose us",
+        intro: home.whyIntro ?? null,
+        points: home.whyPoints?.length
+          ? home.whyPoints
+          : SITE_FALLBACK.whyUs.points,
+        noteTitle: home.whyNoteTitle ?? SITE_FALLBACK.whyUs.noteTitle,
+        noteBody: home.whyNoteBody ?? SITE_FALLBACK.whyUs.noteBody,
+      },
+      process: {
+        heading: home.processHeading ?? "How it works",
+        intro: home.processIntro ?? null,
+        steps: home.processSteps?.length
+          ? home.processSteps
+          : SITE_FALLBACK.process.steps,
+      },
+      serviceAreaSection: {
+        heading: home.serviceAreaHeading ?? "Service area",
+        intro: home.serviceAreaIntro ?? null,
+        neighborhoodsTitle:
+          home.serviceAreaNeighborhoodsTitle ?? "Nearby neighborhoods",
+        neighborhoodsBody: home.serviceAreaNeighborhoodsBody ?? null,
+        hoursTitle: home.serviceAreaHoursTitle ?? "Typical hours",
+        hoursBody: home.serviceAreaHoursBody ?? null,
+      },
+      contact: {
+        heading: home.contactHeading ?? "Contact",
+        intro: home.contactIntro ?? null,
+        callTitle: home.contactCallCardTitle ?? "Call",
+        callBody: home.contactCallCardBody ?? null,
+        quoteTitle: home.contactQuoteCardTitle ?? "Request a quote",
+        quoteBody: home.contactQuoteCardBody ?? null,
+      },
+      footer: {
+        blurb:
+          home.footerBlurb ??
+          "Plumbing repairs, drain cleaning, and water heater service. Serving local homeowners with upfront pricing.",
+        columns: home.footerColumns?.length
+          ? home.footerColumns
+          : SITE_FALLBACK.footer.columns,
+        legalLinks: settings.footerLegalLinks?.length
+          ? settings.footerLegalLinks
+          : SITE_FALLBACK.footer.legalLinks,
+      },
+    };
+  } catch {
+    return SITE_FALLBACK;
+  }
 }
 
 export default async function Home() {
@@ -113,7 +209,7 @@ export default async function Home() {
             <span className={styles.logoWrap}>
               <Image
                 className={styles.logo}
-                src="FFOLogo.PNG"
+                src={data.logoUrl || "FFOLogo.PNG"}
                 alt="Flush Force One Plumbing logo"
                 width={220}
                 height={140}
@@ -126,16 +222,16 @@ export default async function Home() {
           <nav aria-label="Primary">
             <ul className={styles.navLinks}>
               <li>
-                <a href="#services">Services</a>
+                <a href="#services">{data.nav.servicesLabel}</a>
               </li>
               <li>
-                <a href="#why">Why Us</a>
+                <a href="#why">{data.nav.whyLabel}</a>
               </li>
               <li>
-                <a href="#process">Process</a>
+                <a href="#process">{data.nav.processLabel}</a>
               </li>
               <li>
-                <a href="#contact">Contact</a>
+                <a href="#contact">{data.nav.contactLabel}</a>
               </li>
             </ul>
           </nav>
@@ -166,8 +262,8 @@ export default async function Home() {
 
                 <h1 className={styles.h1}>{data.tagline}</h1>
                 <p className={styles.lead}>
-                  Same-day availability when possible. Clear options. Respectful
-                  technicians. Quality parts.
+                  {data.heroLead ||
+                    "Same-day availability when possible. Clear options. Respectful technicians. Quality parts."}
                 </p>
 
                 <div className={styles.heroCtas}>
@@ -181,18 +277,12 @@ export default async function Home() {
                 </div>
 
                 <div className={styles.metaRow}>
-                  <div className={styles.metaCard}>
-                    <div className={styles.metaCardTitle}>Fast response</div>
-                    <div className={styles.metaCardText}>
-                      We’ll confirm scheduling by text/call, and keep you updated.
+                  {data.heroMetaCards.slice(0, 2).map((c) => (
+                    <div key={c.title} className={styles.metaCard}>
+                      <div className={styles.metaCardTitle}>{c.title}</div>
+                      <div className={styles.metaCardText}>{c.body}</div>
                     </div>
-                  </div>
-                  <div className={styles.metaCard}>
-                    <div className={styles.metaCardTitle}>Upfront pricing</div>
-                    <div className={styles.metaCardText}>
-                      Options explained clearly before work begins.
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
 
@@ -214,10 +304,10 @@ export default async function Home() {
         <section id="services" className={styles.section}>
           <div className="container">
             <div className={styles.sectionHeader}>
-              <h2>Core services</h2>
+              <h2>{data.servicesHeading || "Core services"}</h2>
               <p>
-                Simple, transparent help for the most common (and most urgent)
-                plumbing problems.
+                {data.servicesIntro ||
+                  "Simple, transparent help for the most common (and most urgent) plumbing problems."}
               </p>
             </div>
 
@@ -235,21 +325,22 @@ export default async function Home() {
         <section id="why" className={`${styles.section} ${styles.sectionAlt}`}>
           <div className="container">
             <div className={styles.sectionHeader}>
-              <h2>Why homeowners choose us</h2>
+              <h2>{data.why.heading}</h2>
               <p>
-                We focus on clear communication, clean work, and durable repairs.
+                {data.why.intro ||
+                  "We focus on clear communication, clean work, and durable repairs."}
               </p>
             </div>
 
             <div className={styles.split}>
               <ul className={styles.list}>
-                {data.whyUs.points.map((p) => (
+                {data.why.points.map((p) => (
                   <li key={p}>{p}</li>
                 ))}
               </ul>
               <div className={styles.callout}>
-                <strong>{data.whyUs.noteTitle}</strong>
-                <p>{data.whyUs.noteBody}</p>
+                <strong>{data.why.noteTitle}</strong>
+                <p>{data.why.noteBody}</p>
               </div>
             </div>
           </div>
@@ -258,10 +349,10 @@ export default async function Home() {
         <section id="process" className={styles.section}>
           <div className="container">
             <div className={styles.sectionHeader}>
-              <h2>How it works</h2>
+              <h2>{data.process.heading}</h2>
               <p>
-                A straightforward process that keeps you in control from first
-                call to final cleanup.
+                {data.process.intro ||
+                  "A straightforward process that keeps you in control from first call to final cleanup."}
               </p>
             </div>
 
@@ -278,29 +369,32 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="service-area" className={`${styles.section} ${styles.sectionAlt}`}>
+        <section
+          id="service-area"
+          className={`${styles.section} ${styles.sectionAlt}`}
+        >
           <div className="container">
             <div className={styles.sectionHeader}>
-              <h2>Service area</h2>
+              <h2>{data.serviceAreaSection.heading}</h2>
               <p>
-                Add neighborhoods and cities you cover. This will be CMS-driven
-                when Sanity is connected.
+                {data.serviceAreaSection.intro ||
+                  "Add neighborhoods and cities you cover. This will be CMS-driven when Sanity is connected."}
               </p>
             </div>
 
             <div className={styles.split}>
               <div className={styles.card}>
-                <h3>Nearby neighborhoods</h3>
+                <h3>{data.serviceAreaSection.neighborhoodsTitle}</h3>
                 <p>
-                  Downtown • Riverside • Northside • West End • Lakeside •
-                  Hillcrest
+                  {data.serviceAreaSection.neighborhoodsBody ||
+                    "Downtown • Riverside • Northside • West End • Lakeside • Hillcrest"}
                 </p>
               </div>
               <div className={styles.card}>
-                <h3>Typical hours</h3>
+                <h3>{data.serviceAreaSection.hoursTitle}</h3>
                 <p>
-                  Mon–Fri 8am–6pm • Sat 9am–2pm • Emergency after-hours by
-                  request
+                  {data.serviceAreaSection.hoursBody ||
+                    "Mon–Fri 8am–6pm • Sat 9am–2pm • Emergency after-hours by request"}
                 </p>
               </div>
             </div>
@@ -310,30 +404,30 @@ export default async function Home() {
         <section id="contact" className={styles.section}>
           <div className="container">
             <div className={styles.sectionHeader}>
-              <h2>Contact</h2>
+              <h2>{data.contact.heading}</h2>
               <p>
-                For fastest service, call or text. For estimates, tell us what’s
-                happening and share photos if you can.
+                {data.contact.intro ||
+                  "For fastest service, call or text. For estimates, tell us what’s happening and share photos if you can."}
               </p>
             </div>
 
             <div className={styles.split}>
               <div className={styles.card}>
-                <h3>Call</h3>
+                <h3>{data.contact.callTitle}</h3>
                 <p>
                   <a href={`tel:${data.phoneE164}`}>{data.phoneDisplay}</a>
                   <br />
                   <span style={{ color: "var(--muted)" }}>
-                    Tap to call on mobile.
+                    {data.contact.callBody || "Tap to call on mobile."}
                   </span>
                 </p>
               </div>
 
               <div className={styles.card}>
-                <h3>Request a quote</h3>
+                <h3>{data.contact.quoteTitle}</h3>
                 <p>
-                  Hook up a free-tier form provider (or a simple email link) and
-                  store submissions in Sanity if desired.
+                  {data.contact.quoteBody ||
+                    "Hook up a free-tier form provider (or a simple email link) and store submissions in Sanity if desired."}
                 </p>
               </div>
             </div>
@@ -348,7 +442,7 @@ export default async function Home() {
               <span className={styles.logoWrap}>
                 <Image
                   className={styles.logo}
-                  src="FFOLogo.PNG"
+                  src={data.logoUrl || "FFOLogo.PNG"}
                   alt="Flush Force One Plumbing logo"
                   width={220}
                   height={140}
@@ -356,10 +450,7 @@ export default async function Home() {
                 <span>{data.businessName}</span>
               </span>
             </div>
-            <p>
-              Plumbing repairs, drain cleaning, and water heater service. Serving
-              local homeowners with upfront pricing.
-            </p>
+            <p>{data.footer.blurb}</p>
           </div>
 
           <div className={styles.footerCols}>
