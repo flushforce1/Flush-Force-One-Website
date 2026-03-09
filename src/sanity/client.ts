@@ -7,11 +7,11 @@ const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "base_dataset";
 const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2025-02-01";
 
 export const sanityClient = createClient({
-  projectId,
-  dataset,
-  apiVersion,
-  // For public, read-only content this is fine; can be overridden via env.
-  useCdn: process.env.NEXT_PUBLIC_SANITY_USE_CDN
-    ? process.env.NEXT_PUBLIC_SANITY_USE_CDN === "true"
-    : true,
+    projectId,
+    dataset,
+    apiVersion,
+    // For public, read-only content this is fine; can be overridden via env.
+    useCdn: process.env.NEXT_PUBLIC_SANITY_USE_CDN
+        ? process.env.NEXT_PUBLIC_SANITY_USE_CDN === "true"
+        : true,
 });
